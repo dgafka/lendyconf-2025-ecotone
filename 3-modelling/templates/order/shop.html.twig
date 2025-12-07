@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Shop - {{ customer.name }}{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-lg-10">
+        <h2 class="mb-4">🛍️ Shop</h2>
+
+        {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+
+        <form id="order-form" data-url="{{ path('customer_place_order', {customerId: customer.customerId}) }}">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Select Products</h5>
+                    <span class="badge bg-secondary">{{ products|length }} products available</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Description</th>
+                                    <th class="text-end">Price</th>
+                                    <th class="text-center" style="width: 100px;">Stock</th>
+                                    <th style="width: 120px;">Quantity</th>
+                                    <th class="text-end" style="width: 100px;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for product in products %}
+                                {% set productStock = stock[product.productId] ?? 100 %}
+                                <tr{% if productStock == 0 %} class="table-secondary"{% endif %}>
+                                    <td class="fw-bold">{{ product.name }}</td>
+                                    <td class="text-muted small">{{ product.description }}</td>
+                                    <td class="text-end">${{ (product.price.amount / 100)|number_format(2) }}</td>
+                                    <td class="text-center">
+                                        {% if productStock > 10 %}
+                                            <span class="badge bg-success">{{ productStock }}</span>
+                                        {% elseif productStock > 0 %}
+                                            <span class="badge bg-warning text-dark">{{ productStock }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Out of stock</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <input type="number" class="form-control form-control-sm quantity-input"
+                                               data-product-id="{{ product.productId }}"
+                                               data-price="{{ product.price.amount }}"
+                                               data-stock="{{ productStock }}"
+                                               value="0" min="0" max="{{ productStock }}"
+                                               {% if productStock == 0 %}disabled{% endif %}>
+                                    </td>
+                                    <td class="text-end subtotal">$0.00</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td colspan="5" class="text-end"><strong>Total:</strong></td>
+                                    <td class="text-end">
+                                        <strong class="fs-5 text-primary" id="total-price">$0.00</strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg" id="place-order-btn" disabled>
+                    🛒 Place Order - <span id="btn-total">$0.00</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('order-form');
+    const quantityInputs = document.querySelectorAll('.quantity-input:not([disabled])');
+    const totalPriceEl = document.getElementById('total-price');
+    const btnTotalEl = document.getElementById('btn-total');
+    const placeOrderBtn = document.getElementById('place-order-btn');
+
+    function formatCurrency(cents) {
+        return '$' + (cents / 100).toFixed(2);
+    }
+
+    function enforceStockLimit(input) {
+        const stock = parseInt(input.dataset.stock) || 0;
+        const quantity = parseInt(input.value) || 0;
+        if (quantity > stock) {
+            input.value = stock;
+        }
+    }
+
+    function calculateTotals() {
+        let grandTotal = 0;
+        let hasItems = false;
+
+        quantityInputs.forEach(function(input) {
+            enforceStockLimit(input);
+            const quantity = parseInt(input.value) || 0;
+            const price = parseInt(input.dataset.price) || 0;
+            const subtotal = quantity * price;
+
+            const subtotalCell = input.closest('tr').querySelector('.subtotal');
+            subtotalCell.textContent = formatCurrency(subtotal);
+
+            if (quantity > 0) {
+                subtotalCell.classList.add('fw-bold', 'text-success');
+                hasItems = true;
+            } else {
+                subtotalCell.classList.remove('fw-bold', 'text-success');
+            }
+
+            grandTotal += subtotal;
+        });
+
+        totalPriceEl.textContent = formatCurrency(grandTotal);
+        btnTotalEl.textContent = formatCurrency(grandTotal);
+        placeOrderBtn.disabled = !hasItems;
+    }
+
+    quantityInputs.forEach(function(input) {
+        input.addEventListener('input', calculateTotals);
+        input.addEventListener('change', calculateTotals);
+    });
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const orderLines = [];
+        quantityInputs.forEach(function(input) {
+            const quantity = parseInt(input.value) || 0;
+            if (quantity > 0) {
+                orderLines.push({
+                    productId: input.dataset.productId,
+                    quantity: quantity
+                });
+            }
+        });
+
+        try {
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.innerHTML = '⏳ Processing...';
+
+            const response = await fetch(form.dataset.url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderLines: orderLines })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                window.location.href = data.redirectUrl;
+            } else {
+                alert(data.error || 'An error occurred');
+                placeOrderBtn.disabled = false;
+                placeOrderBtn.innerHTML = '🛒 Place Order - <span id="btn-total">' + btnTotalEl.textContent + '</span>';
+            }
+        } catch (error) {
+            alert('An error occurred while placing the order');
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.innerHTML = '🛒 Place Order - <span id="btn-total">' + btnTotalEl.textContent + '</span>';
+        }
+    });
+
+    calculateTotals();
+});
+</script>
+{% endblock %}
+

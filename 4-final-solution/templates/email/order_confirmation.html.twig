@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .header .emoji { font-size: 48px; display: block; margin-bottom: 10px; }
+        .content { background: #f9f9f9; padding: 30px; border: 1px solid #ddd; }
+        .order-info { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .order-info h2 { margin-top: 0; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        .info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .info-label { color: #666; }
+        .info-value { font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #667eea; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #ddd; background: white; }
+        tr:hover td { background: #f5f5f5; }
+        .text-right { text-align: right; }
+        .total-row { background: #f0f0f0 !important; font-weight: bold; font-size: 18px; }
+        .total-row td { border-top: 2px solid #667eea; }
+        .footer { background: #333; color: white; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 14px; }
+        .status-badge { display: inline-block; background: #ffc107; color: #333; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .thank-you { background: #d4edda; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; text-align: center; color: #155724; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="emoji">🛒</span>
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase, {{ customer.name }}!</p>
+    </div>
+
+    <div class="content">
+        <div class="order-info">
+            <h2>📋 Order Details</h2>
+            <div class="info-row">
+                <span class="info-label">Order ID:</span>
+                <span class="info-value">{{ order.orderId[:8] }}...</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Date:</span>
+                <span class="info-value">{{ order.createdAt|date('F j, Y \\a\\t g:i A') }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value"><span class="status-badge">{{ order.status.value|replace({'_': ' '})|title }}</span></span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Customer:</span>
+                <span class="info-value">{{ customer.name }} ({{ customer.email }})</span>
+            </div>
+        </div>
+
+        <h3>🛍️ Items Ordered</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th class="text-right">Price</th>
+                    <th class="text-right">Qty</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in orderItems %}
+                <tr>
+                    <td>
+                        <strong>{{ item.product.name }}</strong><br>
+                        <small style="color: #666;">{{ item.product.description }}</small>
+                    </td>
+                    <td class="text-right">${{ (item.product.price.amount / 100)|number_format(2) }}</td>
+                    <td class="text-right">{{ item.quantity }}</td>
+                    <td class="text-right">${{ (item.lineTotal / 100)|number_format(2) }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="3" class="text-right">Total:</td>
+                    <td class="text-right">${{ (order.totalPrice.amount / 100)|number_format(2) }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="thank-you">
+            <strong>🎉 Thank you for shopping with us!</strong><br>
+            We appreciate your business and hope you enjoy your purchase.
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>🛒 Electronics Store</p>
+        <p>This is an automated confirmation email. Please do not reply.</p>
+    </div>
+</body>
+</html>
+

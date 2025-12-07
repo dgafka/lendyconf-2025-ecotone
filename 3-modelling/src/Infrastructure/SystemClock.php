@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure;
+
+use App\Domain\Clock;
+use Symfony\Component\DependencyInjection\Attribute\AsAlias;
+
+#[AsAlias(Clock::class)]
+final class SystemClock implements Clock
+{
+    public function now(): \DateTimeImmutable
+    {
+        return new \DateTimeImmutable();
+    }
+}
+
