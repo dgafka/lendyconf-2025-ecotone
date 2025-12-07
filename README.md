@@ -55,4 +55,4 @@ Enter specific exercise directory and run the following command:
 
 # Hints
 
-1. Do avoid reaching composer install limits during the workshop (same ip, multiple requests), some dependencies are already installed and commited to the repository.
+1. To avoid reaching composer install limits during the workshop (same ip, multiple requests), some dependencies are already installed and commited to the repository.

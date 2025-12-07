@@ -1,8 +1,4 @@
-# Lesson first: Auto-Setup and Declarative Configuration
-
-# Prerequisites
-
-Read main [README](../README.md)
+# Lesson first: Final Solution
 
 # Task Description
 
