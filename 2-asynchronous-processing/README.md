@@ -48,3 +48,11 @@ Hints:
     - [Dbal Message Channel](https://docs.ecotone.tech/modules/dbal-support#message-channel)  
     - [Service configuration](https://docs.ecotone.tech/messaging/service-application-configuration#extension-objects)  
     - [Asynchronous Processing](https://docs.ecotone.tech/modelling/asynchronous-processing)  
+
+## 3. Test out full App
+
+You can now test out the full app by running Message Consumer and placing an order:
+```bash
+  make exec CMD="bin/console ecotone:run async"
+```
+And then place the order via web interface [localhost:4000](http://localhost:4000)

@@ -1,4 +1,4 @@
-.PHONY: up down logs test tests shell exec help
+.PHONY: build up down logs test tests shell exec help
 
 # Colors for pretty output
 GREEN  := \033[0;32m
@@ -15,6 +15,15 @@ help: ## Show this help message
 	@echo "$(BOLD)$(CYAN)Available commands:$(RESET)"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(RESET) %s\n", $$1, $$2}'
+	@echo ""
+
+build: ## Build Docker images
+	@echo ""
+	@echo "$(BOLD)$(CYAN)Building Docker images...$(RESET)"
+	@echo ""
+	@docker-compose build
+	@echo ""
+	@echo "$(BOLD)$(GREEN)Docker images have been built!$(RESET)"
 	@echo ""
 
 up: ## Start all containers in detached mode

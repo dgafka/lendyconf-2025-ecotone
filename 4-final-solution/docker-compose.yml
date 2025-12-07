@@ -21,6 +21,27 @@ services:
       - "4000:80"
     depends_on:
       - redis
+  app_consumer:
+      image: simplycodedsoftware/nginx-php:8.4.7
+      volumes:
+          - ".:/data/app"
+      working_dir: "/data/app"
+      container_name: "ecotone_demo_consumer"
+      networks:
+          - default
+      extra_hosts:
+          - "host.docker.internal:host-gateway"
+      command: "bin/console ecotone:run async"
+      environment:
+          COMPOSE_HTTP_TIMEOUT: 9999
+          APP_INSTALL_DEPENDENCIES: 'no'
+          DATABASE_DSN: pgsql://app:!ChangeMe!@database:5432/app
+          XDEBUG_ENABLED: "0"
+          OTEL_SERVICE_NAME: "resilient_service"
+          REDIS_DSN: "redis://redis:6379"
+      depends_on:
+          - redis
+          - app
   redis:
     image: redis:7-alpine
     ports:
