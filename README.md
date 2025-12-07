@@ -4,9 +4,10 @@ In this repository you will find all materials for the Ecotone workshop.
 
 # Context
 
-In this Workshop we will learn Ecotone's fundamentals, on how to use declarative configuration and config-lite approach to build Message-Driven Systems.
-This workshop is built on top of e-commerce application, which is application that allows users to buy products.  
-This is standard Symfony application with Ecotone's Symfony Bundle installed, nothing extra is added.
+In this workshop, we'll learn Ecotone's fundamentals—how to use declarative configuration and a auto-configuration approach to build message-driven systems.   
+We're working with a real e-commerce application where customers can browse products, add them to their cart, and complete purchases. Available via web interface at [localhost:4000](http://localhost:4000).      
+This is a standard Symfony application without any messaging capabilities yet. We'll install and configure Ecotone ourselves as part of the learning process. This hands-on approach will show, how simple it is to add powerful messaging capabilities to an existing application.   
+By the end, we'll see how Ecotone's declarative style eliminates configuration files and reduces development time from hours to minutes.  
 
 
 The workshop is divided into three sections (exercises). Each is built on top of previous one.
