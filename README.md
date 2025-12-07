@@ -18,10 +18,9 @@ The workshop is divided into three sections (exercises). Each is built on top of
 
 # Requirements
 
-OS required Linux, MacOS.
-To run the workshop you only need [Docker](https://docs.docker.com/engine/install/) and [Docker-Compose](https://docs.docker.com/compose/install/).
-
-If you don't have PHPStorm, you can use the free [Visual Studio Code](https://code.visualstudio.com/) to edit code with the [PHP](https://marketplace.visualstudio.com/items?itemName=DEVSENSE.phptools-vscode) plugin.
+- OS required: Linux, MacOS.  
+- Execution platform: [Docker](https://docs.docker.com/engine/install/) and [Docker-Compose](https://docs.docker.com/compose/install/).
+- IDE: PHPStorm or free [Visual Studio Code](https://code.visualstudio.com/) to edit code with the [PHP](https://marketplace.visualstudio.com/items?itemName=DEVSENSE.phptools-vscode) plugin.
 
 # Run specific exercise
 
