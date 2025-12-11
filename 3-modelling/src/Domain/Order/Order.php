@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace App\Domain\Order;
 
 use App\Domain\Clock;
+use App\Domain\Order\Event\OrderWasPlaced;
+use Ecotone\Messaging\Attribute\Parameter\Header;
+use Ecotone\Modelling\Attribute\Aggregate;
+use Ecotone\Modelling\Attribute\CommandHandler;
+use Ecotone\Modelling\Attribute\Identifier;
+use Ecotone\Modelling\WithEvents;
 use Symfony\Component\Uid\Uuid;
 
 final class Order

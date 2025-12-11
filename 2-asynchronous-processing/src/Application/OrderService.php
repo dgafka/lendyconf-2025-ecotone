@@ -18,6 +18,8 @@ use Ecotone\Messaging\Attribute\Parameter\Header;
 use Ecotone\Modelling\Attribute\CommandHandler;
 use Ecotone\Modelling\Attribute\EventHandler;
 use Ecotone\Modelling\EventBus;
+use Ecotone\Messaging\Attribute\Asynchronous;
+
 
 final class OrderService
 {

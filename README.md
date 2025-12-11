@@ -50,6 +50,11 @@ Enter specific exercise directory and run the following command:
   make test
 ```
 
+#### To shell into the container, run:
+```bash
+  make shell
+```
+
 #### Before proceeding with next exercises, do the clean up with:
 ```bash
   make down
