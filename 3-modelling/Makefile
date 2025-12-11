@@ -21,7 +21,7 @@ build: ## Build Docker images
 	@echo ""
 	@echo "$(BOLD)$(CYAN)Building Docker images...$(RESET)"
 	@echo ""
-	@docker-compose build
+	@docker compose build
 	@echo ""
 	@echo "$(BOLD)$(GREEN)Docker images have been built!$(RESET)"
 	@echo ""
@@ -30,7 +30,7 @@ up: ## Start all containers in detached mode
 	@echo ""
 	@echo "$(BOLD)$(CYAN)Starting Docker containers...$(RESET)"
 	@echo ""
-	@docker-compose up -d
+	@docker compose up -d
 	@echo ""
 	@echo "$(BOLD)$(GREEN)Containers are up and running!$(RESET)"
 	@echo ""
@@ -39,7 +39,7 @@ down: ## Stop and remove all containers
 	@echo ""
 	@echo "$(BOLD)$(CYAN)Stopping Docker containers...$(RESET)"
 	@echo ""
-	@docker-compose down
+	@docker compose down
 	@echo ""
 	@echo "$(BOLD)$(GREEN)Containers have been stopped and removed.$(RESET)"
 	@echo ""
